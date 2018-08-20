@@ -17,7 +17,7 @@ class TestQuestions(unittest.TestCase):
         )
         reply = json.loads(response.data.decode())
 
-        self.assertEqual(reply['message'], 'question added')
+        self.assertEqual(reply['message'], 'Question added')
     
     def test_add_question_empty_string(self):
         question = dict(
