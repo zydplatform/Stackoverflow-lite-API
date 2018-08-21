@@ -2,7 +2,7 @@
 
 StackOverflow-lite is a platform where people can ask questions and provide answers.
 
-[![Build Status](https://travis-ci.org/KengoWada/Stackoverflow-lite-API.svg?branch=api)](https://travis-ci.org/KengoWada/Stackoverflow-lite-API)
+[![Build Status](https://travis-ci.org/KengoWada/Stackoverflow-lite-API.svg?branch=api)](https://travis-ci.org/KengoWada/Stackoverflow-lite-API) [![Maintainability](https://api.codeclimate.com/v1/badges/6cdbe0208a6102b00787/maintainability)](https://codeclimate.com/github/KengoWada/Stackoverflow-lite-API/maintainability)
 
 
 ## Getting Started
