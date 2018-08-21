@@ -9,5 +9,5 @@ script:
   - pytest
   - coverage report
 
-after success:
+after_success:
   - coveralls
