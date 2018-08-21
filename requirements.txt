@@ -54,6 +54,7 @@ pyOpenSSL==17.5.0
 pyptlib==0.0.6
 pyserial==3.4
 pytest==3.3.2
+pytest-cov==2.5.1
 pyxdg==0.25
 PyYAML==3.12
 # qrtools==1.4

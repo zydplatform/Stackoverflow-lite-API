@@ -7,6 +7,5 @@ install:
 
 script:
   - python -m pytest --cov
-
 after_success:
   - coveralls
