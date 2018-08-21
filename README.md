@@ -2,6 +2,8 @@
 
 StackOverflow-lite is a platform where people can ask questions and provide answers.
 
+[![Build Status](https://travis-ci.org/KengoWada/Stackoverflow-lite-API.svg?branch=api)](https://travis-ci.org/KengoWada/Stackoverflow-lite-API)
+
 
 ## Getting Started
 
