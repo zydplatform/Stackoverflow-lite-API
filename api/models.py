@@ -48,8 +48,9 @@ class Questions:
         try:
             if questionId > len(questions) or questionId <= 0:
                 return jsonify({'message': 'Question doesn\'t exist.'}), 400
-            qn = questions[questionId]
+            qn = questions[questionId - 1]
             return jsonify({
+                'Answer': [answer.__dict__ for answer in answers if answer.questionId == questionId],
                 'Question': qn.__dict__,
                 'message': 'Questions fetched successfully'
             }), 200
@@ -58,8 +59,8 @@ class Questions:
 
 
 class Answer:
-    def __init__(self, ans_id, details):
-        self.answerId = ans_id
+    def __init__(self, qn_id, details):
+        self.questionId = qn_id
         self.details = details
 
     @staticmethod
