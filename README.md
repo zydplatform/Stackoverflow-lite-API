@@ -43,6 +43,11 @@ POST|api/v1/questions/questionId/answers|Add an answer
 * [Virtual Environment](https://virtualenv.pypa.io/en/stable/) - Used to create isolated Python environments
 * [PIP](https://pip.pypa.io/en/stable/) - Python package installer.
 
+
+### Deployment
+
+* The API is hosted on [Heroku](https://kengo-stackoverflow-lite-api.herokuapp.com/).
+
 ### Built With
 
 * Python/Flask
