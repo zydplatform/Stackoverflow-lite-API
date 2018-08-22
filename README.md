@@ -46,7 +46,7 @@ POST|api/v1/questions/questionId/answers|Add an answer
 
 ### Deployment
 
-The API is hosted on [Heroku](https://kengo-stackoverflow-lite-api.herokuapp.com/).
+The API is hosted on [Heroku](https://kengo-stackoverflow-lite-api.herokuapp.com/api/v1/questions).
 
 ### Built With
 
