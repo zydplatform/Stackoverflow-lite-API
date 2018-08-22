@@ -73,3 +73,27 @@ class TestQuestions(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
+
+class TestAnswers(unittest.TestCase):
+    def setUp(self):
+        self.tester = app.test_client(self)
+    
+    def test_post_answer(self):
+        question = dict(
+            details = 'What am I doing?'
+        )
+        answer = dict(
+            details = 'Answer to the question.'
+        )
+        self.tester.post(
+            'api/v1/questions',
+            content_type = 'application/json',
+            data = json.dumps(question)
+        )
+        response = self.tester.post(
+            'api/v1/questions/1/answers',
+            content_type = 'application/json',
+            data = json.dumps(answer)
+        )
+
+        self.assertEqual(response.status_code, 201)
