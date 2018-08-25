@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 import json
-# import uuid
 from api.models import Questions, Answer, questions, answers
 
 app = Flask(__name__)
