@@ -177,3 +177,7 @@ class Answer:
             }), 201
         except IndexError:
             return jsonify({'message': 'The question does not exist.'}), 400
+
+    @staticmethod
+    def prefered_answer(questionId, answerId):
+        pass

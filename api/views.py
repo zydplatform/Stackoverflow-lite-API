@@ -32,3 +32,7 @@ def login():
 @app.route('/api/v1/auth/sigup', methods=['POST'])
 def signup():
     return User.register()
+
+@app.route('/api/v1/questions/<int:questionId>/answers/<int:answerId>', methods=['PUT'])
+def preferred_answer(questionId, answerId):
+    pass
