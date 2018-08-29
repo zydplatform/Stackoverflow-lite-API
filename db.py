@@ -12,8 +12,8 @@ class DatabaseConnection:
             self.cursor = self.connection.cursor()
             pprint('Database connected.')
             create_user_table = "CREATE TABLE IF NOT EXISTS users (userId TEXT NOT NULL PRIMARY KEY, username TEXT NOT NULL, email TEXT NOT NULL, password TEXT NOT NULL);"
-            create_answers_table = "CREATE TABLE IF NOT EXISTS answers (answerId SERIAL NOT NULL PRIMARY KEY, details TEXT NOT NULL, questionId INTEGER NOT NULL, userId TEXT NOT NULL);"
-            create_questions_table = "CREATE TABLE IF NOT EXISTS questions (questionId INTEGER NOT NULL PRIMARY KEY, details TEXT NOT NULL, userId TEXT NOT NULL);"
+            create_answers_table = "CREATE TABLE IF NOT EXISTS answers (answerId SERIAL NOT NULL PRIMARY KEY, details TEXT NOT NULL, questionId INTEGER NOT NULL, userId TEXT NOT NULL, fav BOOLEAN NOT NULL DEFAULT 'False');"
+            create_questions_table = "CREATE TABLE IF NOT EXISTS questions (questionId SERIAL NOT NULL PRIMARY KEY, details TEXT NOT NULL, userId TEXT NOT NULL);"
 
             self.cursor.execute(create_user_table)
             self.cursor.execute(create_questions_table)
@@ -27,8 +27,8 @@ class DatabaseConnection:
         pprint(insert_user)
         self.cursor.execute(insert_user)
 
-    def insert_question(self, questionId, details, userId):
-        insert_question = "INSERT INTO questions(questionId, details, userId) VALUES('{}', '{}', '{}')".format(questionId, details, userId)
+    def insert_question(self, details, userId):
+        insert_question = "INSERT INTO questions(details, userId) VALUES('{}', '{}')".format(details, userId)
         pprint(insert_question)
         self.cursor.execute(insert_question)
 
@@ -65,15 +65,26 @@ class DatabaseConnection:
         pprint(insert_answer)
         self.cursor.execute(insert_answer)
 
+    def get_answers(self, questionId):
+        query = "SELECT * FROM answers WHERE questionId='{}'".format(questionId)
+        pprint(query)
+        self.cursor.execute(query)
+        answers = self.cursor.fetchall()
+        return answers
+
     def get_all_questions(self):
         query = "SELECT * FROM questions"
         pprint(query)
         self.cursor.execute(query)
+        question = self.cursor.fetchall()
+        return question
 
     def get_one_question(self,questionId):
         query = "SELECT * FROM questions WHERE questionId='{}'".format(questionId)
         pprint(query)
         self.cursor.execute(query)
+        question = self.cursor.fetchone()
+        return question
 
     def delete_question(self, questionId, userId):
         query = "DELETE FROM questions WHERE questionId='{}'".format(questionId)
@@ -84,11 +95,25 @@ class DatabaseConnection:
         query = "SELECT userId FROM questions WHERE questionId='{}'".format(questionId)
         pprint(query)
         self.cursor.execute(query)
+        userId = self.cursor.fetchone()
+        return userId
 
-    def answered(self, answerId):
-        query = "SELECT userId FROM answers WHERE answerId='{}'".format(answerId)
+    def answered(self, answerId, questionId):
+        query = "SELECT userId FROM answers WHERE answerId='{}' and questionId='{}'".format(answerId, questionId)
         pprint(query)
         self.cursor.execute(query)
+        userId = self.cursor.fetchone()
+        return userId
+    
+    def preferred(self, userId):
+        add_fav = "UPDATE questiions SET fav='True' WHERE userId='{}'".format(userId)
+        pprint(add_fav)
+        self.cursor.execute(add_fav)
+
+    def edit_answer(self,details, userId, questionId):
+        edit_ans = "UPDATE answers SET details='{}' WHERE userId='{}' and questionId='{}'".format(details, userId, questionId)
+        pprint(edit_ans)
+        self.cursor.execute(edit_ans)
 
 if __name__ == '__main__':
     database_connection = DatabaseConnection()

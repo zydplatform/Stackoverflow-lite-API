@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify
 import json, uuid, re
 from db import DatabaseConnection
-from api.models import User, Answer, Questions, users, answers, questions
+from api.models import User, Answer, Questions, answers
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-
 
 app = Flask(__name__)
 jwt = JWTManager(app)
@@ -13,79 +12,72 @@ app.config['JWT_SECRET_KEY'] = 'KenG0W@Da4!'
 @app.route('/api/v1/questions', methods=['POST'])
 @jwt_required
 def post_question():
+    userId = get_jwt_identity()
     info = request.get_json()
 
-    questionId = len(questions) + 1
     details = info.get('details')
 
     if not details or details.isspace():
         return jsonify({"message": "Enter a question"}), 400
 
-    question = Questions(questionId, details)
-    questions.append(question)
+    db = DatabaseConnection()
+    db.insert_question(details, userId[0])
 
     return jsonify({
-        'id': questionId,
-        'question': question.__dict__,
-        'message': 'Question added'
+        'message': 'Question added succesfully.'
     }), 201
 
 @app.route('/api/v1/questions', methods=['GET'])
 def get_all_questions():
-    if len(questions) == 0:
-        return jsonify({'message': 'There are no questions yet.'}), 400
-
     db = DatabaseConnection()
-    db.get_all_questions()
+    question_db = db.get_all_questions()
 
-    if db.get_all_questions() == None:
+    if question_db == None:
         return jsonify({
             'message': 'There are no questions yet.'
-        })
-        
-    return jsonify({
-        'Questions': [question.__dict__ for question in questions],
-        'message': 'Questions fetched successfully.'
-    }), 200
+        }), 404
+    else:
+        return jsonify({
+            'Question': [question for question in question_db]
+        }), 201
+
 
 @app.route('/api/v1/questions/<int:questionId>/answers', methods=['POST'])
 @jwt_required
-def answer(questionId):
+def post_answer(questionId):
     try:
         info = request.get_json()
+        userId = get_jwt_identity()
 
         details = info.get('details')
 
         if not details and details.isspace():
             return jsonify({'message': 'Please enter an answer'}), 400
-        if len(questions) == 0:
-            return jsonify({'messge': 'There are no questions yet.'}), 400
-
-        question = questions[questionId - 1]
-        answer = Answer(questionId, details)
-        answers.append(answer)
+        
+        db = DatabaseConnection()
+        db.insert_answer(details, userId[0], questionId)
             
         return jsonify({
-            'Question': question.__dict__,
-            'Answer': answer.__dict__,
-            'message': 'Answer added succesfully'
+            'message': 'Answer added succesfully.'
         }), 201
     except IndexError:
         return jsonify({'message': 'The question does not exist'}), 400
 
 @app.route('/api/v1/questions/<int:questionId>', methods=['GET'])
-def one_qn(questionId):
+def get_one_qn(questionId):
     try:
-        if questionId > len(questions) or questionId <= 0:
-            return jsonify({'message': 'Question doesn\'t exist.'}), 400
-        qn = questions[questionId - 1]
-
         db = DatabaseConnection()
-        db.get_one_question(questionId)
+        question = db.get_one_question(questionId)
+        answers = db.get_answers(questionId)
+
+        print(type(answers))
+
+        if question == None:
+            return jsonify({'message': 'Question doesn\'t exist'}), 400
 
         return jsonify({
-            'Answer': [answer.__dict__ for answer in answers if answer.questionId == questionId],
-            'Question': qn.__dict__,
+            'Question': question,
+            'Answer': [answer for answer in answers],
             'message': 'Questions fetched successfully'
         }), 200
     except TypeError:
@@ -95,12 +87,16 @@ def one_qn(questionId):
 @jwt_required
 def delete_question(questionId):
     try:
-        if len(questions) == 0:
-            return jsonify({'message': 'There are no questions to delete.'}), 400
-        for question in questions:
-            if questionId == question.questionId:
-                questions.remove(question)
-                return jsonify({'message': 'Question deleted.'}), 200
+        userId = get_jwt_identity()
+
+        db = DatabaseConnection()
+        question = db.get_one_question(questionId)
+
+        if question[2] == userId[0]:
+            db.delete_question(questionId, userId)
+            return jsonify({'message': 'Question deleted succesfully.'})
+        else:
+            return jsonify({'message': 'You don\'t have permission to delete this question.'})
     except TypeError:
         return jsonify({'message': 'Question does not exist.'}), 400
 
@@ -159,8 +155,6 @@ def signup():
         return jsonify({'message': 'Password must be at least 8 characters.'}), 400
     
     db = DatabaseConnection()
-    user = User(userId, username, password, email)
-    # users.append(user)
     email_db = db.check_email(email)
     username_db = db.check_username(username)
 
@@ -169,12 +163,10 @@ def signup():
     if email_db != None:
         return jsonify({'message': 'This email is already taken.'}), 400
     db.insert_users(userId, username, email, password)
-    access_token = create_access_token(username)
+    access_token = create_access_token(userId)
 
     return jsonify({
         'access_token': access_token,
-        'UserId': userId,
-        'Username': user.username,
         'message': '{} has been registered succesfully.'.format(username)
     })
 
@@ -182,4 +174,20 @@ def signup():
 @app.route('/api/v1/questions/<int:questionId>/answers/<int:answerId>', methods=['PUT'])
 @jwt_required
 def preferred_answer(questionId, answerId):
-    pass
+    userId = get_jwt_identity()
+    db = DatabaseConnection()
+    question_userId = db.asked(questionId)
+    answer_userId = db.answered(answerId, questionId)
+
+    if userId[0] == question_userId[0]:
+        db.preferred(userId[0])
+        return jsonify({'message': 'Welcome!'})
+    elif userId[0] == answer_userId[0]:
+        info = request.get_json()
+        details = info.get('details')
+
+        db.edit_answer(details, userId, questionId)
+
+        return jsonify({'message': 'Wlecome.'})
+    else:
+        return jsonify({'message': 'You don\'t have permission to be here.'}), 400

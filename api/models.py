@@ -11,9 +11,9 @@ class User:
 
 
 class Questions:
-    def __init__(self, qn_id, details):
-        self.questionId = qn_id
-        self.details = details        
+    def __init__(self, details, userId):
+        self.details = details
+        self.userId = userId
 
 
 class Answer:

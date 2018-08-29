@@ -4,7 +4,7 @@ StackOverflow-lite is a platform where people can ask questions and provide answ
 
 [![Build Status](https://travis-ci.org/KengoWada/Stackoverflow-lite-API.svg?branch=api)](https://travis-ci.org/KengoWada/Stackoverflow-lite-API) [![Maintainability](https://api.codeclimate.com/v1/badges/6cdbe0208a6102b00787/maintainability)](https://codeclimate.com/github/KengoWada/Stackoverflow-lite-API/maintainability) [![Coverage Status](https://coveralls.io/repos/github/KengoWada/Stackoverflow-lite-API/badge.svg?branch=api)](https://coveralls.io/github/KengoWada/Stackoverflow-lite-API?branch=api)
 
-## Getting Started
+### Getting Started
 
 Clone the project using the [link](https://github.com/KengoWada/Stackoverflow-lite).
 
@@ -25,6 +25,12 @@ git clone https://github.com/KengoWada/Stackoverflow-lite.git
 * Post an answer for a particular question
 * Get all questions
 * Get a single question
+* Delete a question that a user has created
+* A user can login
+* A user can register
+* A user can select a particular answer as the preferred one to the question he/she asked
+* A user can edit an answer they have posted
+
 
 
 ### Endpoints
@@ -32,9 +38,13 @@ git clone https://github.com/KengoWada/Stackoverflow-lite.git
 HTTP Method|Endpoint|Functionality
 -----------|--------|-------------
 POST|api/v1/questions|Create a question
-GET|api/v1/questions/questionId|Fetch a specific question
+GET|api/v1/questions/<questionId>|Fetch a specific question
 GET|api/v1/questions|Fetch all questions
-POST|api/v1/questions/questionId/answers|Add an answer
+POST|api/v1/questions/<questionId>/answers|Add an answer
+DELETE|api/v1/questions/<questionId>|Delete a question
+POST|api/v1/auth/login|Allow a user to login
+POST|api/v1/auth/signup|Allow a user to register and use the system
+PUT|api/v1/questions/<questionId>/answers/<answerId>|Allow a user to mark an answer as preferred and edit an answer they provided
 
 
 ### Tools Used
