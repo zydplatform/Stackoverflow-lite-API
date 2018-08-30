@@ -19,20 +19,16 @@ def post_question():
     userId = get_jwt_identity()
     info = request.get_json()
 
-    details = info.get('details')
+    question = info.get('question')
 
-    if not details or details.isspace():
-        return jsonify({'message': 'Enter a question'}), 400
+    if not question or question.isspace():
+        return jsonify({'message': 'Enter a question.'}), 400
 
     db = DatabaseConnection()
-    questions = db.check_question(userId[0])
-    for question in questions:
-        if question == details:
-            return jsonify({'message': 'Please be more creative.'})
-    db.insert_question(details, userId[0])
+    db.insert_question(question, userId[0])
 
     return jsonify({
-        'message': 'Question added succesfully.'
+        'Question': question
     }), 201
 
 

@@ -207,6 +207,56 @@ class TestQuestions(unittest.TestCase):
         self.test_client = app.test_client(self)
 
     def test_post_question(self):
-        pass
+        user = {
+            'username': 'kengowadaty',
+            'password': 'kengowada'
+        }
+        response = self.test_client.post(
+            'api/v1/auth/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+        access_token = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 200)
+
+        question = {
+            'question': 'My question?'
+        }
+        response1 = self.test_client.post(
+            'api/v1/questions',
+            headers={'Authorization': 'Bearer ' + access_token['token']},
+            content_type='application/json',
+            data=json.dumps(question)
+        )
+        message = json.loads(response1.data.decode())
+        self.assertEqual(message['Question'], 'My question?')
+
+    def test_post_empty_question(self):
+        user = {
+            'username': 'kengowadaty',
+            'password': 'kengowada'
+        }
+        response = self.test_client.post(
+            'api/v1/auth/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+        access_token = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 200)
+
+        question = {
+            'question': ''
+        }
+        response1 = self.test_client.post(
+            'api/v1/questions',
+            headers={'Authorization': 'Bearer ' + access_token['token']},
+            content_type='application/json',
+            data=json.dumps(question)
+        )
+        message = json.loads(response1.data.decode())
+        self.assertEqual(message['message'], 'Enter a question.')
+
+    
+
 
 db.drop_tables()
