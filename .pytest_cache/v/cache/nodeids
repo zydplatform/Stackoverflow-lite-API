@@ -1,0 +1,19 @@
+[
+  "tests/test_views.py::TestUsers::test_user_login",
+  "tests/test_views.py::TestUsers::test_user_login_empty_password",
+  "tests/test_views.py::TestUsers::test_user_login_empty_username",
+  "tests/test_views.py::TestUsers::test_user_register",
+  "tests/test_views.py::TestUsers::test_user_register_email_exists",
+  "tests/test_views.py::TestUsers::test_user_register_email_syntax",
+  "tests/test_views.py::TestUsers::test_user_register_empty_email",
+  "tests/test_views.py::TestUsers::test_user_register_empty_password",
+  "tests/test_views.py::TestUsers::test_user_register_empty_username",
+  "tests/test_views.py::TestUsers::test_user_register_password_length",
+  "tests/test_views.py::TestUsers::test_user_register_username_exists",
+  "tests/test_views.py::TestQuestions::test_delete_question",
+  "tests/test_views.py::TestQuestions::test_get_all_questions",
+  "tests/test_views.py::TestQuestions::test_get_question",
+  "tests/test_views.py::TestQuestions::test_get_question_no_question_db",
+  "tests/test_views.py::TestQuestions::test_post_empty_question",
+  "tests/test_views.py::TestQuestions::test_post_question"
+]

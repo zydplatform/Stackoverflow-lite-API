@@ -55,15 +55,13 @@ def post_answer(questionId):
         info = request.get_json()
         userId = get_jwt_identity()
 
-        details = info.get('details')
+        answer = info.get('answer')
 
-        if not details and details.isspace():
-            return jsonify({'message': 'Please enter an answer'}), 400
-        if not isinstance(details, str):
-            return jsonify({'message': 'Only strings allowed for answers.'})
+        if not answer and answer.isspace():
+            return jsonify({'message': 'Please enter an answer.'}), 400
 
         db = DatabaseConnection()
-        db.insert_answer(details, userId[0], questionId)
+        db.insert_answer(answer, userId[0], questionId)
 
         return jsonify({
             'message': 'Answer added succesfully.'
@@ -105,9 +103,9 @@ def delete_question(questionId):
 
         if question[2] == username[0]:
             db.delete_question(questionId, username)
-            return jsonify({'message': 'Question deleted succesfully.'})
+            return jsonify({'message': 'Question deleted succesfully.'}), 200
         else:
-            return jsonify({'message': 'You don\'t have permission to delete this question.'})
+            return jsonify({'message': 'You don\'t have permission to delete this question.'}), 400
     except TypeError:
         return jsonify({'message': 'Question does not exist.'}), 400
 
@@ -161,8 +159,6 @@ def signup():
 
     if not password or password.isspace():
         return jsonify({'message': 'Password field can not be left empty.'}), 400
-    elif not re.match(r"[A-Z, a-z, 0-9, @#]", password):
-        return jsonify({'message': 'Password must contain each one of these characters (A-Za-z0-9@#)'}), 400
     elif len(password) < 8:
         return jsonify({'message': 'Password must be at least 8 characters.'}), 400
 
@@ -193,13 +189,10 @@ def preferred_answer(questionId, answerId):
 
     if userId[0] == question_userId[0]:
         db.preferred(userId[0])
-        return jsonify({'message': 'Welcome!'})
     elif userId[0] == answer_userId[0]:
         info = request.get_json()
         details = info.get('details')
 
         db.edit_answer(details, userId, questionId)
-
-        return jsonify({'message': 'Wlecome.'})
     else:
         return jsonify({'message': 'You don\'t have permission to be here.'}), 400
