@@ -24,8 +24,13 @@ def post_question():
     if not question or question.isspace():
         return jsonify({'message': 'Enter a question.'}), 400
 
-    db = DatabaseConnection()
-    db.insert_question(question, username[0])
+    question_db = db.check_question(username)
+
+    for Question in question_db:
+        if Question[0] == question:
+            return jsonify({'message': 'Please be creative. You can not ask the same question twice.'})
+
+    db.insert_question(question, username)
 
     return jsonify({
         'Question': question
@@ -53,7 +58,7 @@ def get_all_questions():
 def post_answer(questionId):
     try:
         info = request.get_json()
-        userId = get_jwt_identity()
+        username = get_jwt_identity()
 
         answer = info.get('answer')
 
@@ -61,7 +66,7 @@ def post_answer(questionId):
             return jsonify({'message': 'Please enter an answer.'}), 400
 
         db = DatabaseConnection()
-        db.insert_answer(answer, userId[0], questionId)
+        db.insert_answer(answer, username, questionId)
 
         return jsonify({
             'message': 'Answer added succesfully.'
@@ -101,7 +106,7 @@ def delete_question(questionId):
         db = DatabaseConnection()
         question = db.get_one_question(questionId)
 
-        if question[2] == username[0]:
+        if question[2] == username:
             db.delete_question(questionId, username)
             return jsonify({'message': 'Question deleted succesfully.'}), 200
         else:
@@ -196,3 +201,8 @@ def preferred_answer(questionId, answerId):
         db.edit_answer(details, userId, questionId)
     else:
         return jsonify({'message': 'You don\'t have permission to be here.'}), 400
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify({'message': 'The URL entered does not exist.'})

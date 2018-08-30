@@ -82,7 +82,7 @@ class DatabaseConnection:
         return questions
 
     def insert_answer(self, details, username, questionId):
-        insert_answer = "INSERT INTO answers(details, userId, questionId) VALUES('{}','{}','{}')".format(
+        insert_answer = "INSERT INTO answers(details, username, questionId) VALUES('{}','{}','{}')".format(
             details, username, questionId)
         pprint(insert_answer)
         self.cursor.execute(insert_answer)

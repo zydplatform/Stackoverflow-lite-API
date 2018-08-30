@@ -231,6 +231,38 @@ class TestQuestions(unittest.TestCase):
         message = json.loads(response1.data.decode())
         self.assertEqual(message['Question'], 'My question?')
 
+    def test_post_question_twice(self):
+        user = {
+            'username': 'kengowadaty',
+            'password': 'kengowada'
+        }
+        response = self.test_client.post(
+            'api/v1/auth/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+        access_token = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 200)
+
+        question = {
+            'question': 'My question?'
+        }
+        self.test_client.post(
+            'api/v1/questions',
+            headers={'Authorization': 'Bearer ' + access_token['token']},
+            content_type='application/json',
+            data=json.dumps(question)
+        )
+
+        response1 = self.test_client.post(
+            'api/v1/questions',
+            headers={'Authorization': 'Bearer ' + access_token['token']},
+            content_type='application/json',
+            data=json.dumps(question)
+        )
+        message = json.loads(response1.data.decode())
+        self.assertEqual(message['message'], 'Please be creative. You can not ask the same question twice.')
+
     def test_post_empty_question(self):
         user = {
             'username': 'kengowadaty',
@@ -293,9 +325,6 @@ class TestQuestions(unittest.TestCase):
         access_token = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 200)
 
-        question = {
-            'question': 'new question?'
-        }
         self.test_client.post(
             'api/v1/questions',
             headers={'Authorization': 'Bearer ' + access_token['token']},
@@ -304,7 +333,7 @@ class TestQuestions(unittest.TestCase):
         )
 
         response1 = self.test_client.get(
-            'api/v1/questions/1',
+            'api/v1/questions/2',
             headers={'Authorization': 'Bearer ' + access_token['token']},
             content_type='application/json'
         )
@@ -347,9 +376,6 @@ class TestQuestions(unittest.TestCase):
         access_token = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 200)
 
-        question = {
-            'question': 'new question?'
-        }
         self.test_client.post(
             'api/v1/questions',
             headers={'Authorization': 'Bearer ' + access_token['token']},
@@ -400,35 +426,6 @@ class TestAnswers(unittest.TestCase):
             data=json.dumps(answer)
         )
         message = json.loads(post_ans.data.decode())
-
-        self.assertEqual(message['message'], 'Please enter an answer.')
-
-    def post_answer_empty_string(self):
-        user = {
-            'username': 'kengowadaty',
-            'password': 'kengowada'
-        }
-        response = self.test_client.post(
-            'api/v1/auth/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-        question = {
-            'question': 'Okay another one.'
-        }
-        access_token = json.loads(response.data.decode())
-        self.assertEqual(response.status_code, 200)
-
-        question = {
-            'answer': 'new question?'
-        }
-        post_qn = self.test_client.post(
-            'api/v1/questions',
-            headers={'Authorization': 'Bearer ' + access_token['token']},
-            content_type='application/json',
-            data=json.dumps(question)
-        )
-        message = json.loads(post_qn.data.decode())
 
         self.assertEqual(message['message'], 'Please enter an answer.')
 
