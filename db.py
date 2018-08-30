@@ -6,7 +6,7 @@ import os
 class DatabaseConnection:
 
     def __init__(self):
-        if os.getenv('APP_SETTINGS') == 'test_d':
+        if os.getenv('APP_SETTINGS') == 'test_db':
             self.db = 'test_db'
         else:
             self.db = 'stackoverflow'
