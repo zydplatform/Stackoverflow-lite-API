@@ -256,6 +256,82 @@ class TestQuestions(unittest.TestCase):
         message = json.loads(response1.data.decode())
         self.assertEqual(message['message'], 'Enter a question.')
 
+    def test_get_question_no_question_db(self):
+        user = {
+            'username': 'kengowadaty',
+            'password': 'kengowada'
+        }
+        response = self.test_client.post(
+            'api/v1/auth/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+        access_token = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 200)
+
+        response1 = self.test_client.get(
+            'api/v1/questions/2',
+            headers={'Authorization': 'Bearer ' + access_token['token']},
+            content_type='application/json'
+        )
+        message = json.loads(response1.data.decode())
+        self.assertEqual(message['message'], 'Question doesn\'t exist') 
+
+    def test_get_question(self):
+        user = {
+            'username': 'kengowadaty',
+            'password': 'kengowada'
+        }
+        response = self.test_client.post(
+            'api/v1/auth/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+        question = {
+            'question': 'Okay another one.'
+        }
+        access_token = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 200)
+
+        question = {
+            'question': 'new question?'
+        }
+        self.test_client.post(
+            'api/v1/questions',
+            headers={'Authorization': 'Bearer ' + access_token['token']},
+            content_type='application/json',
+            data=json.dumps(question)
+        )
+
+        response1 = self.test_client.get(
+            'api/v1/questions/1',
+            headers={'Authorization': 'Bearer ' + access_token['token']},
+            content_type='application/json'
+        )
+        message = json.loads(response1.data.decode())
+        self.assertEqual(message['message'], 'Question fetched succesfully.')
+        
+    def test_get_all_questions(self):
+        user = {
+            'username': 'kengowadaty',
+            'password': 'kengowada'
+        }
+        response = self.test_client.post(
+            'api/v1/auth/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+        access_token = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 200)
+
+        response1 = self.test_client.get(
+            'api/v1/questions',
+            headers={'Authorization': 'Bearer ' + access_token['token']},
+            content_type='application/json'
+        )
+        # message = json.loads(response1.data.decode())
+        self.assertEqual(response1.status_code, 201)
+
     
 
 

@@ -16,7 +16,7 @@ db = DatabaseConnection()
 @app.route('/api/v1/questions', methods=['POST'])
 @jwt_required
 def post_question():
-    userId = get_jwt_identity()
+    username = get_jwt_identity()
     info = request.get_json()
 
     question = info.get('question')
@@ -25,7 +25,7 @@ def post_question():
         return jsonify({'message': 'Enter a question.'}), 400
 
     db = DatabaseConnection()
-    db.insert_question(question, userId[0])
+    db.insert_question(question, username[0])
 
     return jsonify({
         'Question': question
@@ -41,7 +41,7 @@ def get_all_questions():
     if question_db == None:
         return jsonify({
             'message': 'There are no questions yet.'
-        }), 404
+        }), 400
     else:
         return jsonify({
             'Question': [question for question in question_db]
@@ -88,7 +88,7 @@ def get_one_qn(questionId):
         return jsonify({
             'Question': question,
             'Answer': [answer for answer in answers],
-            'message': 'Questions fetched successfully',
+            'message': 'Question fetched succesfully.',
         }), 200
     except TypeError:
         return jsonify({'message': 'Question Id must be a number.'}), 400
@@ -98,13 +98,13 @@ def get_one_qn(questionId):
 @jwt_required
 def delete_question(questionId):
     try:
-        userId = get_jwt_identity()
+        username = get_jwt_identity()
 
         db = DatabaseConnection()
         question = db.get_one_question(questionId)
 
-        if question[2] == userId[0]:
-            db.delete_question(questionId, userId)
+        if question[2] == username[0]:
+            db.delete_question(questionId, username)
             return jsonify({'message': 'Question deleted succesfully.'})
         else:
             return jsonify({'message': 'You don\'t have permission to delete this question.'})
@@ -130,10 +130,9 @@ def login():
 
     db = DatabaseConnection()
     user = db.login(username)
-    userId = db.user(username)
 
     if check_password_hash(user[3], password) and user[1] == username:
-        access_token = create_access_token(identity=userId)
+        access_token = create_access_token(identity=username)
         return jsonify({
             'token': access_token,
             'message': '{} has logged in.'.format(username)
@@ -176,7 +175,7 @@ def signup():
     if email_db != None:
         return jsonify({'message': 'This email is already taken.'}), 400
     db.insert_users(userId, username, email, password_hash)
-    access_token = create_access_token(userId)
+    access_token = create_access_token(username)
 
     return jsonify({
         'access_token': access_token,
