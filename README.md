@@ -35,6 +35,8 @@ POST|api/v1/questions|Create a question
 GET|api/v1/questions/questionId|Fetch a specific question
 GET|api/v1/questions|Fetch all questions
 POST|api/v1/questions/questionId/answers|Add an answer
+POST|api/v1/auth/login|Allow a user to login
+POST|api/v1/auth/signup|Allow user to register
 
 
 ### Tools Used
