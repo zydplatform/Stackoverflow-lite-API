@@ -1,7 +1,3 @@
-users = []
-questions = []
-answers = []
-
 class User:
     def __init__(self, userId, username, password, email):
         self.userId = userId
