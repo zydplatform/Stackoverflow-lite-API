@@ -56,6 +56,7 @@ pyptlib==0.0.6
 pyserial==3.4
 pytest==3.3.2
 pytest-cov==2.5.1
+python-dotenv==0.9.1
 pyxdg==0.25
 PyYAML==3.12
 requests==2.19.1
