@@ -207,7 +207,7 @@ def preferred_answer(questionId, answerId):
 @jwt_required
 def get_an_answer(questionId, answerId):
     db = DatabaseConnection()
-    answer = db.get_an_answer(questionId)¬
+    answer = db.get_an_answer(questionId)
     question = db.get_a_question(questionId)
 
     if question == None:
