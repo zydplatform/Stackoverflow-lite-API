@@ -96,6 +96,20 @@ class DatabaseConnection:
         self.cursor.execute(query)
         answers = self.cursor.fetchall()
         return answers
+    
+    def get_an_answer(self, questionId):
+        query_ans = "SELECT details FROM answers WHERE questionId='{}'".format(questionId)
+        pprint(query_ans)
+        self.cursor.execute(query_ans)
+        answer = self.cursor.fetchone()
+        return answer
+
+    def get_a_question(self, questionId):
+        query_qn = "SELECT details FROM questions WHERE questionId='{}'".format(questionId)
+        pprint(query_qn)
+        self.cursor.execute(query_qn)
+        question = self.cursor.fetchone()
+        return question
 
     def get_all_questions(self):
         query = "SELECT questionId, details FROM questions"

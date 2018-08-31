@@ -188,20 +188,37 @@ def signup():
 @app.route('/api/v1/questions/<int:questionId>/answers/<int:answerId>', methods=['PUT'])
 @jwt_required
 def preferred_answer(questionId, answerId):
-    userId = get_jwt_identity()
+    username = get_jwt_identity()
     db = DatabaseConnection()
-    question_userId = db.asked(questionId)
-    answer_userId = db.answered(answerId, questionId)
+    question_username = db.asked(questionId)
+    answer_username = db.answered(answerId, questionId)
 
-    if userId[0] == question_userId[0]:
-        db.preferred(userId[0])
-    elif userId[0] == answer_userId[0]:
+    if username == question_username[0]:
+        db.preferred(username)
+    elif username == answer_username[0]:
         info = request.get_json()
-        details = info.get('details')
+        new_answer = info.get('new_answer')
 
-        db.edit_answer(details, userId, questionId)
+        db.edit_answer(new_answer, username, questionId)
     else:
         return jsonify({'message': 'You don\'t have permission to be here.'}), 400
+
+@app.route('/api/v1/questions/<int:questionId>/answers/<int:answerId>', methods=['GET'])
+@jwt_required
+def get_an_answer(questionId, answerId):
+    db = DatabaseConnection()
+    answer = db.get_an_answer(questionId)¬
+    question = db.get_a_question(questionId)
+
+    if question == None:
+        return jsonify({'message': 'Question does not exist.'})
+    if answer == None:
+        return jsonify({'message': 'Answer does not exist'})
+
+    return jsonify({
+        'Question': question,
+        'Answer': answer
+    })
 
 
 @app.errorhandler(404)
