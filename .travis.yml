@@ -2,7 +2,8 @@ language: python
 
 python: 
   - "3.6"
-
+services:
+  - postgresql
 env:
   global:
     - "APP_SETTINGS=test_db"
