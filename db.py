@@ -10,7 +10,7 @@ class DatabaseConnection:
             self.db = 'test_db'
         else:
             self.db = 'stackoverflow'
-        
+
         try:
             self.connection = psycopg2.connect(
                 dbname=self.db, user='postgres', host='localhost', password='kengo1234', port='5432'
@@ -53,7 +53,8 @@ class DatabaseConnection:
         return user
 
     def user(self, username):
-        query = "SELECT username FROM users WHERE username='{}'".format(username)
+        query = "SELECT username FROM users WHERE username='{}'".format(
+            username)
         pprint(query)
         self.cursor.execute(query)
         userId = self.cursor.fetchone()
@@ -75,7 +76,8 @@ class DatabaseConnection:
         return email
 
     def check_question(self, username):
-        query = "SELECT details FROM questions WHERE username='{}'".format(username)
+        query = "SELECT details FROM questions WHERE username='{}'".format(
+            username)
         pprint(query)
         self.cursor.execute(query)
         questions = self.cursor.fetchall()

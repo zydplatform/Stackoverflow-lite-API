@@ -5,6 +5,7 @@ from db import DatabaseConnection
 
 db = DatabaseConnection()
 
+
 class TestUsers(unittest.TestCase):
     def setUp(self):
         self.test_client = app.test_client(self)
@@ -22,8 +23,9 @@ class TestUsers(unittest.TestCase):
         )
         message = json.loads(response.data.decode())
 
-        self.assertEqual(message['message'], 'kengowadaty has been registered succesfully.')
-    
+        self.assertEqual(message['message'],
+                         'kengowadaty has been registered succesfully.')
+
     def test_user_register_empty_username(self):
         user = {
             'username': '',
@@ -37,7 +39,8 @@ class TestUsers(unittest.TestCase):
         )
         message = json.loads(response.data.decode())
 
-        self.assertEqual(message['message'], 'Username field can not be empty.')
+        self.assertEqual(message['message'],
+                         'Username field can not be empty.')
 
     def test_user_register_empty_password(self):
         user = {
@@ -52,7 +55,8 @@ class TestUsers(unittest.TestCase):
         )
         message = json.loads(response.data.decode())
 
-        self.assertEqual(message['message'], 'Password field can not be left empty.')
+        self.assertEqual(message['message'],
+                         'Password field can not be left empty.')
 
     def test_user_register_empty_email(self):
         user = {
@@ -97,7 +101,8 @@ class TestUsers(unittest.TestCase):
         )
         message = json.loads(response.data.decode())
 
-        self.assertEqual(message['message'], 'Password must be at least 8 characters.')
+        self.assertEqual(message['message'],
+                         'Password must be at least 8 characters.')
 
     def test_user_register_username_exists(self):
         user = {
@@ -112,7 +117,8 @@ class TestUsers(unittest.TestCase):
         )
         message = json.loads(response.data.decode())
 
-        self.assertEqual(message['message'], 'This username already has an account.')
+        self.assertEqual(message['message'],
+                         'This username already has an account.')
 
     def test_user_register_email_exists(self):
         user = {
@@ -261,7 +267,8 @@ class TestQuestions(unittest.TestCase):
             data=json.dumps(question)
         )
         message = json.loads(response1.data.decode())
-        self.assertEqual(message['message'], 'Please be creative. You can not ask the same question twice.')
+        self.assertEqual(
+            message['message'], 'Please be creative. You can not ask the same question twice.')
 
     def test_post_empty_question(self):
         user = {
@@ -307,7 +314,7 @@ class TestQuestions(unittest.TestCase):
             content_type='application/json'
         )
         message = json.loads(response1.data.decode())
-        self.assertEqual(message['message'], 'Question doesn\'t exist') 
+        self.assertEqual(message['message'], 'Question doesn\'t exist')
 
     def test_get_question(self):
         user = {
@@ -339,7 +346,7 @@ class TestQuestions(unittest.TestCase):
         )
         message = json.loads(response1.data.decode())
         self.assertEqual(message['message'], 'Question fetched succesfully.')
-        
+
     def test_get_all_questions(self):
         user = {
             'username': 'kengowadaty',
@@ -389,6 +396,7 @@ class TestQuestions(unittest.TestCase):
             content_type='application/json'
         )
         self.assertEqual(delete.status_code, 200)
+
 
 class TestAnswers(unittest.TestCase):
     def setUp(self):
