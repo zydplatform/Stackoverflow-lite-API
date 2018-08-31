@@ -1,4 +1,5 @@
 language: python
+
 python: 
   - "3.6"
 
@@ -14,5 +15,6 @@ before script:
 
 script:
   - python -m pytest --cov
+  
 after_success:
   - coveralls

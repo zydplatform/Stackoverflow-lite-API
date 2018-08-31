@@ -150,7 +150,3 @@ class DatabaseConnection:
         drop = "DROP TABLE users, questions, answers"
         pprint(drop)
         self.cursor.execute(drop)
-
-
-if __name__ == '__main__':
-    database_connection = DatabaseConnection()
