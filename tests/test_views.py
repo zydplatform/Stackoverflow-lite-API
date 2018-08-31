@@ -437,5 +437,3 @@ class TestAnswers(unittest.TestCase):
 
         self.assertEqual(message['message'], 'Please enter an answer.')
 
-
-db.drop_tables()
