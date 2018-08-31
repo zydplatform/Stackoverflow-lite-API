@@ -4,3 +4,4 @@ venv
 .vscode
 .cache
 .coverage
+.env
