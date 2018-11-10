@@ -35,6 +35,7 @@ class DatabaseConnection:
         insert_user = "INSERT INTO users(userId, username, email, password) VALUES('{}', '{}', '{}', '{}')".format(
             userId, username, email, password)
         pprint(insert_user)
+        #cursor
         self.cursor.execute(insert_user)
 
     def insert_question(self, details, username):
